@@ -1,6 +1,21 @@
 cmake_minimum_required(VERSION 2.6)
 project(DLib)
 
+# Peter for windows
+# boost
+if (MSVC)
+set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_STATIC_RUNTIME OFF) # new idea for prebuilt version from boost.org?
+#find_package (Boost COMPONENTS thread system filesystem program_options serialization REQUIRED)
+find_package (Boost REQUIRED)
+IF (Boost_FOUND)
+	include_directories(${Boost_INCLUDE_DIR})
+	link_directories(${Boost_LIBRARY_DIRS})
+	add_definitions( "-DHAS_BOOST" ) # sure...
+ENDIF()
+endif()
+
+
 option(BUILD_DUtils   "Build DUtils (basic c++ functions)." ON)
 option(BUILD_DUtilsCV "Build DUtilsCV (OpenCV functions, requires DUtils)." ON)
 option(BUILD_DVision  "Build DVision (computer vision functions, requires DUtilsCV)." ON)
@@ -53,7 +68,13 @@ if(BUILD_DUtilsCV OR BUILD_DVision)
 endif(BUILD_DUtilsCV OR BUILD_DVision)
 
 include_directories(include/DUtils include/DUtilsCV include/DVision ${OpenCV_INCLUDE_DIRS})
+# Peter for windows
+if (MSVC)
+add_library(${PROJECT_NAME} ${SRCS})
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "d")
+else()
 add_library(${PROJECT_NAME} SHARED ${SRCS})
+endif()
 target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
 
 configure_file(src/DLib.cmake.in
