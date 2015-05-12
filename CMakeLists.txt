@@ -71,7 +71,7 @@ include_directories(include/DUtils include/DUtilsCV include/DVision ${OpenCV_INC
 # Peter for windows
 if (MSVC)
 add_library(${PROJECT_NAME} ${SRCS})
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "d")
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 else()
 add_library(${PROJECT_NAME} SHARED ${SRCS})
 endif()
